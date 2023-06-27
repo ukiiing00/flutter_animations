@@ -19,8 +19,6 @@ class _ImplicitAnimationScreenState extends State<ImplicitAnimationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    print(_visible);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Implicit Animations"),
@@ -29,19 +27,20 @@ class _ImplicitAnimationScreenState extends State<ImplicitAnimationScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedContainer(
-              curve: Curves.elasticOut,
-              duration: const Duration(seconds: 2),
-              transform: Matrix4.rotationZ(_visible ? 1 : 0),
-              transformAlignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: _visible ? Colors.red : Colors.orange,
-                borderRadius: BorderRadius.circular(
-                  _visible ? 100 : 0,
-                ),
+            TweenAnimationBuilder(
+              tween: ColorTween(
+                begin: Colors.purple,
+                end: Colors.red,
               ),
-              height: size.width * 0.7,
-              width: size.width * 0.7,
+              curve: Curves.elasticOut,
+              duration: const Duration(seconds: 25),
+              builder: (context, value, child) {
+                return Image.network(
+                  "https://res.cloudinary.com/dnegavcrl/images/f_auto,q_auto/v1678438365/Flutter-Dash-Sticer/Flutter-Dash-Sticer.png?_i=AA",
+                  color: value,
+                  colorBlendMode: BlendMode.difference,
+                );
+              },
             ),
             const SizedBox(
               height: 50,
