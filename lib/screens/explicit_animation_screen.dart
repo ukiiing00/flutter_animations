@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class ExplicitAnimationScreen extends StatefulWidget {
@@ -34,8 +36,8 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
     super.initState();
     // Ticker((elapsed) => print(elapsed)).start();
 
-    // Timer.periodic(const Duration(milliseconds: 500),
-    //     (timer) => print(_animationController.value));
+    Timer.periodic(const Duration(milliseconds: 500),
+        (timer) => print(_animationController.value));
   }
 
   @override
@@ -48,12 +50,9 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) => Text(
-                "${_animationController.value}",
-                style: const TextStyle(fontSize: 28),
-              ),
+            Text(
+              "${_animationController.value}",
+              style: const TextStyle(fontSize: 28),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
