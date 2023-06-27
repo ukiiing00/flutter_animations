@@ -19,6 +19,7 @@ class _ImplicitAnimationScreenState extends State<ImplicitAnimationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("dfdfkj $_visible");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Implicit Animations"),
