@@ -17,9 +17,30 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
     ),
   );
 
-  late final Animation<Color?> _color = ColorTween(
-    begin: Colors.amber,
-    end: Colors.red,
+  late final Animation<Decoration> _decoration = DecorationTween(
+    begin: BoxDecoration(
+      color: Colors.amber,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    end: BoxDecoration(
+      color: Colors.red,
+      borderRadius: BorderRadius.circular(120),
+    ),
+  ).animate(_animationController);
+
+  late final Animation<double> _rotation = Tween(
+    begin: 0.0,
+    end: 2.0,
+  ).animate(_animationController);
+
+  late final Animation<double> _scale = Tween(
+    begin: 1.0,
+    end: 1.1,
+  ).animate(_animationController);
+
+  late final Animation<Offset> _offset = Tween(
+    begin: Offset.zero,
+    end: const Offset(0, -0.5),
   ).animate(_animationController);
 
   void _play() {
@@ -44,6 +65,12 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -53,15 +80,21 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedBuilder(
-              animation: _color,
-              builder: (context, child) {
-                return Container(
-                  color: _color.value,
-                  width: 400,
-                  height: 400,
-                );
-              },
+            SlideTransition(
+              position: _offset,
+              child: ScaleTransition(
+                scale: _scale,
+                child: RotationTransition(
+                  turns: _rotation,
+                  child: DecoratedBoxTransition(
+                    decoration: _decoration,
+                    child: const SizedBox(
+                      width: 400,
+                      height: 400,
+                    ),
+                  ),
+                ),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
