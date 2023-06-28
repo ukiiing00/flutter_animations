@@ -20,7 +20,9 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
     ),
     lowerBound: 0.0,
     upperBound: 1.0,
-  );
+  )..addListener(() {
+      _value.value = _animationController.value;
+    });
 
   late final Animation<Decoration> _decoration = DecorationTween(
     begin: BoxDecoration(
@@ -81,8 +83,16 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
     super.dispose();
   }
 
+  final ValueNotifier<double> _value = ValueNotifier(0.0);
+
+  void _onChanged(double value) {
+    // _value.value = 0;
+    _animationController.value = value;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("build");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Explicit Animations"),
@@ -123,7 +133,15 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
                   child: const Text("Rewind"),
                 ),
               ],
-            )
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            ValueListenableBuilder(
+              valueListenable: _value,
+              builder: (context, value, child) =>
+                  Slider(value: value, onChanged: _onChanged),
+            ),
           ],
         ),
       ),
