@@ -13,8 +13,13 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
   late final AnimationController _animationController = AnimationController(
     vsync: this,
     duration: const Duration(
-      seconds: 2,
+      seconds: 4,
     ),
+    reverseDuration: const Duration(
+      seconds: 3,
+    ),
+    lowerBound: 0.0,
+    upperBound: 1.0,
   );
 
   late final Animation<Decoration> _decoration = DecorationTween(
@@ -26,22 +31,28 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
       color: Colors.red,
       borderRadius: BorderRadius.circular(120),
     ),
-  ).animate(_animationController);
+  ).animate(_curved);
 
   late final Animation<double> _rotation = Tween(
     begin: 0.0,
     end: 2.0,
-  ).animate(_animationController);
+  ).animate(_curved);
 
   late final Animation<double> _scale = Tween(
     begin: 1.0,
     end: 1.1,
-  ).animate(_animationController);
+  ).animate(_curved);
 
   late final Animation<Offset> _offset = Tween(
     begin: Offset.zero,
-    end: const Offset(0, -0.5),
-  ).animate(_animationController);
+    end: const Offset(0, -0.2),
+  ).animate(_curved);
+
+  late final CurvedAnimation _curved = CurvedAnimation(
+    curve: Curves.elasticOut,
+    reverseCurve: Curves.bounceOut,
+    parent: _animationController,
+  );
 
   void _play() {
     _animationController.forward();
