@@ -13,16 +13,38 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
   late final AnimationController _animationController = AnimationController(
     vsync: this,
     duration: const Duration(
-      seconds: 4,
+      seconds: 3,
     ),
     reverseDuration: const Duration(
       seconds: 3,
     ),
     lowerBound: 0.0,
     upperBound: 1.0,
-  )..addListener(() {
+  )
+    ..addListener(() {
       _value.value = _animationController.value;
+    })
+    ..addStatusListener((status) {
+      print(status);
+      if (status == AnimationStatus.completed) {
+        // _animationController.reverse();
+      }
     });
+
+  bool _looping = false;
+
+  void _toggleLooping() {
+    if (_looping) {
+      _animationController.stop();
+    } else {
+      _animationController.repeat(
+        reverse: true,
+      );
+    }
+    setState(() {
+      _looping = !_looping;
+    });
+  }
 
   late final Animation<Decoration> _decoration = DecorationTween(
     begin: BoxDecoration(
@@ -131,6 +153,10 @@ class _ExplicitAnimationScreenState extends State<ExplicitAnimationScreen>
                 ElevatedButton(
                   onPressed: _rewind,
                   child: const Text("Rewind"),
+                ),
+                ElevatedButton(
+                  onPressed: _toggleLooping,
+                  child: Text(_looping ? "Stop Looping" : "Start Looping"),
                 ),
               ],
             ),
