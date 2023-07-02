@@ -23,9 +23,14 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     value: 0.0,
   );
 
-  late final Tween<double> _rotation = Tween(
+  final Tween<double> _rotation = Tween(
     begin: -15,
     end: 15,
+  );
+
+  final Tween<double> _scale = Tween(
+    begin: 0.8,
+    end: 1.0,
   );
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
@@ -61,9 +66,24 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
         builder: (context, child) {
           final angle = _rotation
               .transform((_position.value + size.width / 2) / size.width);
+          final scale = _scale.transform(_position.value.abs() / size.width);
           return Stack(
             alignment: Alignment.topCenter,
             children: [
+              Positioned(
+                top: 100,
+                child: Transform.scale(
+                  scale: scale,
+                  child: Material(
+                    elevation: 10,
+                    color: Colors.blue.shade100,
+                    child: SizedBox(
+                      width: size.width * 0.8,
+                      height: size.height * 0.5,
+                    ),
+                  ),
+                ),
+              ),
               Positioned(
                 top: 100,
                 child: GestureDetector(
@@ -84,7 +104,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           );
         },
