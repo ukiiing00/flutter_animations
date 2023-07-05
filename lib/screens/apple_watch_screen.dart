@@ -27,16 +27,16 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
     3,
     (index) => Tween(
       begin: 0.005,
-      end: Random().nextDouble() * 1.9,
+      end: Random().nextDouble() * 1.99,
     ).animate(_curved),
   );
 
   void _animationValue() {
     _progresses = List.generate(
-      3,
+      _progresses.length,
       (index) => Tween(
         begin: _progresses[index].value,
-        end: Random().nextDouble() * 1.9,
+        end: Random().nextDouble() * 1.99,
       ).animate(_curved),
     );
     _animationController.forward(from: 0);
