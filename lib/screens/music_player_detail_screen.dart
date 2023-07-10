@@ -16,10 +16,9 @@ class MusicPlayerDetailScreen extends StatefulWidget {
 class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _progressContrller =
-      AnimationController(vsync: this)
+      AnimationController(vsync: this, duration: const Duration(minutes: 1))
         ..repeat(
           reverse: true,
-          period: const Duration(minutes: 1),
         );
 
   @override
@@ -74,6 +73,60 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                 painter: ProgressBar(progressValue: _progressContrller.value),
               );
             },
+          ),
+          AnimatedBuilder(
+            animation: _progressContrller,
+            builder: (context, child) {
+              final seconds =
+                  Duration(seconds: (_progressContrller.value * 60).floor());
+              final secondsString = seconds.toString().split('.')[0].split(':');
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 10,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      '${secondsString[1]}:${secondsString[2]}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '01:00',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          const Text(
+            'Interstellar',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          const Text(
+            'A FILM By Christopher Nolan - Original Motion Picture SoundTrack',
+            style: TextStyle(fontSize: 18),
+            maxLines: 1,
+            overflow: TextOverflow.visible,
           ),
         ],
       ),
