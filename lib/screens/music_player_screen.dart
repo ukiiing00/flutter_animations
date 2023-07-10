@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animations/screens/music_player_detail_screen.dart';
 
 class MusicPlayerScreen extends StatefulWidget {
   const MusicPlayerScreen({super.key});
@@ -22,6 +23,16 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     setState(() {
       _currentPage = newPage;
     });
+  }
+
+  void _onTap(int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MusicPlayerDetailScreen(
+          index: index,
+        ),
+      ),
+    );
   }
 
   @override
@@ -86,23 +97,29 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                       final scale = 1 - (difference * 0.2);
                       // print(difference);
                       print("$scale ${index + 1}");
-                      return Transform.scale(
-                        scale: scale,
-                        child: Container(
-                          height: 350,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.4),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                  offset: const Offset(-2, 2))
-                            ],
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image:
-                                  AssetImage("assets/covers/${index + 1}.jpeg"),
+                      return GestureDetector(
+                        onTap: () => _onTap(index + 1),
+                        child: Hero(
+                          tag: index + 1,
+                          child: Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              height: 350,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.4),
+                                      blurRadius: 10,
+                                      spreadRadius: 2,
+                                      offset: const Offset(-2, 2))
+                                ],
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage(
+                                      "assets/covers/${index + 1}.jpeg"),
+                                ),
+                              ),
                             ),
                           ),
                         ),
