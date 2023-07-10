@@ -97,7 +97,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                     valueListenable: _scroll,
                     builder: (context, value, child) {
                       final double difference = (value - index).abs();
-                      final scale = 1 - (difference * 0.2);
+                      final scale = 1 - (difference * 0.3);
                       // print(difference);
                       print("$scale ${index + 1}");
                       return GestureDetector(
