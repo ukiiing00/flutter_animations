@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class MusicPlayerDetailScreen extends StatefulWidget {
   const MusicPlayerDetailScreen({
@@ -16,6 +15,14 @@ class MusicPlayerDetailScreen extends StatefulWidget {
 
 class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     with TickerProviderStateMixin {
+  bool isDragging = false;
+
+  void _toggleDragging() {
+    setState(() {
+      isDragging = !isDragging;
+    });
+  }
+
   late final AnimationController _progressContrller =
       AnimationController(vsync: this, duration: const Duration(minutes: 1))
         ..repeat(
@@ -28,7 +35,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   )..repeat(reverse: true);
 
   late final Animation<Offset> _marquee = Tween(
-    begin: const Offset(0.1, 0),
+    begin: const Offset(0.02, 0),
     end: const Offset(-0.6, 0),
   ).animate(_marqueeController);
 
@@ -55,12 +62,30 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     super.dispose();
   }
 
+  late final size = MediaQuery.of(context).size;
+
+  final ValueNotifier<double> _volume = ValueNotifier(0.0);
+
+  void _onVolumeDragUpdate(DragUpdateDetails details) {
+    _volume.value += details.delta.dx;
+    _volume.value = _volume.value.clamp(0.0, size.width - 80);
+  }
+
+  void _toggleMenu() {}
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Interstellar'),
+        actions: [
+          IconButton(
+            onPressed: _toggleMenu,
+            icon: const Icon(
+              Icons.menu,
+            ),
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -105,8 +130,9 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           AnimatedBuilder(
             animation: _progressContrller,
             builder: (context, child) {
-              final seconds =
-                  Duration(seconds: (_progressContrller.value * 60).floor());
+              final seconds = Duration(
+                seconds: (_progressContrller.value * 60).floor(),
+              );
               final secondsString = seconds.toString().split('.')[0].split(':');
               return Padding(
                 padding: const EdgeInsets.symmetric(
@@ -150,17 +176,28 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           const SizedBox(
             height: 5,
           ),
-          SlideTransition(
-            position: _marquee,
-            child: const Text(
-              'A FILM By Christopher Nolan - Original Motion Picture SoundTrack',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+          SizedBox(
+            height: 30,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 40,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.visible,
-              softWrap: false,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  SlideTransition(
+                    position: _marquee,
+                    child: const Text(
+                      'A FILM By Christopher Nolan - Original Motion Picture SoundTrack',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(
@@ -176,21 +213,76 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                   progress: _playPauseController,
                   size: 60,
                 ),
-                LottieBuilder.asset(
-                  'assets/animations/play-button.json',
-                  controller: _playPauseController,
-                  width: 200,
-                  height: 200,
-                  onLoaded: (composition) {
-                    _playPauseController.duration = composition.duration;
-                  },
-                )
+                // LottieBuilder.asset(
+                //   'assets/animations/play-button.json',
+                //   controller: _playPauseController,
+                //   width: 200,
+                //   height: 200,
+                //   onLoaded: (composition) {
+                //     _playPauseController.duration = composition.duration;
+                //   },
+                // )
               ],
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          GestureDetector(
+            onHorizontalDragUpdate: (details) => _onVolumeDragUpdate(details),
+            onHorizontalDragStart: (_) => _toggleDragging(),
+            onHorizontalDragEnd: (_) => _toggleDragging(),
+            child: AnimatedScale(
+              scale: isDragging ? 1.1 : 1,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.bounceOut,
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                child: ValueListenableBuilder(
+                  valueListenable: _volume,
+                  builder: (context, value, child) => CustomPaint(
+                    size: Size(size.width - 80, 50),
+                    painter: VolumePainter(
+                      volume: value,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+class VolumePainter extends CustomPainter {
+  final double volume;
+
+  VolumePainter({
+    required this.volume,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final progress = volume;
+
+    final bgPaint = Paint()..color = Colors.grey.shade300;
+    final bgRect = Rect.fromLTWH(0, 0, size.width, size.height);
+
+    canvas.drawRect(bgRect, bgPaint);
+
+    final volumePaint = Paint()..color = Colors.grey.shade500;
+    final volumeRect = Rect.fromLTWH(0, 0, volume, size.height);
+
+    canvas.drawRect(volumeRect, volumePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant VolumePainter oldDelegate) {
+    return oldDelegate.volume != volume;
   }
 }
 
