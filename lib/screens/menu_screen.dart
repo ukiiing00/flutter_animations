@@ -72,7 +72,7 @@ class MenuScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () => _goToPage(context, const WalletScreen()),
-              child: const Text("Wallet"),
+              child: const Text("Wallet Project"),
             ),
           ],
         ),
