@@ -15,30 +15,110 @@ class _WalletScreenState extends State<WalletScreen> {
       appBar: AppBar(
         title: const Text('Wallet'),
       ),
-      body: Center(
-        child: const Text(
-          'Hello!',
-          style: TextStyle(
-            fontSize: 66,
-          ),
-        )
-            .animate()
-            .fadeIn(
-              begin: 0,
-              duration: 5.seconds,
-            )
-            .scale(
-              begin: Offset.zero,
-              duration: 5.seconds,
-              end: const Offset(1, 1),
-              alignment: Alignment.center,
-            )
-            .then(delay: 5.seconds)
-            .slideX(
-              begin: 0,
-              end: -10,
-              duration: 2.seconds,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: const [
+            CreditCard(bgColor: Colors.purple),
+            CreditCard(bgColor: Colors.black),
+            CreditCard(bgColor: Colors.blue),
+          ]
+              .animate(
+                interval: 500.milliseconds,
+              )
+              .fadeIn(
+                begin: 0,
+              )
+              .slideX(
+                begin: -1,
+                end: 0,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
+class CreditCard extends StatelessWidget {
+  const CreditCard({
+    super.key,
+    required this.bgColor,
+  });
+
+  final Color bgColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(
+        bottom: 20,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: bgColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 30,
+          vertical: 20,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 100,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'VIP CARD',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      '**** **** **** **88',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 20,
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.amber,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
